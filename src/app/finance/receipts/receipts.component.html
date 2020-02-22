@@ -1,0 +1,360 @@
+<ul class="nav nav-pills mb-3 border-bottom border-secondary" id="pills-tab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="" data-toggle="pill" href="#pills-new" role="tab" aria-controls="pills-home"
+      aria-selected="true">Account Receivables</a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+
+  <div class="tab-pane fade show active" id="pills-new" role="tabpanel" aria-labelledby="pills-home-tab">
+
+    <form #receiptsForm="ngForm" [formGroup]="receiptsInformationForm" (keydown.enter)="$event.preventDefault()"
+      (ngSubmit)="onReceiptsSubmit()" class="full-height">
+      <h6 class="border border-primary p-2 mt-3 mb-4 bg-light text-white">Receivables Details</h6>
+
+      <div class="row">
+        <div class="col-lg-4">
+      
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group">
+            <div class="col-sm-12 benificiary d-flex pt-2 px-0">
+              <div class="d-inline mr-3">
+                <label id="receiptLabelFrom" class="mb-0">Benificiary</label>
+              </div>
+              <div class="custom-control d-inline custom-radio mr-3">
+                <input type="radio" value="N" class="custom-control-input" id="ins" [(ngModel)]="insurance"
+                  [ngModelOptions]="{standalone:true}" name="insurance" checked>
+                <label id="receiptLabelInsurance" class="custom-control-label" for="ins">Insurance</label>
+              </div>
+              <div class="custom-control d-inline custom-radio">
+                <input type="radio" value="Y" class="custom-control-input" [(ngModel)]="insurance" id="cust"
+                  [ngModelOptions]="{standalone:true}" name="insurance">
+                <label id="receiptLabelCustomer" class="custom-control-label" for="cust">Customer</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-lg-4">
+          <div class="form-group row" id="policyDiv" style="display: none;">
+            <label id="policyName" for="" class="col-sm-2 col-form-label px-0 text-right">PolicyCode<span
+                class="text-danger">*</span></label>
+            <div class="col-sm-12">
+              <ng-select placeholder="-- select --" (change)="onInsuranceSelected($event)" id="receiptPayment"
+                [items]="policies" bindLabel="policyCode" formControlName="selectedPolicy" [(ngModel)]="selectedPolicy">
+              </ng-select>
+              <div *ngIf="receiptsInformationForm.get('selectedPolicy')?.touched" class="error-msg-common text-danger">
+                <div *ngIf="receiptsInformationForm.get('selectedPolicy').errors?.required">
+                  * required field
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row" id="customerDiv">
+            <label id="customerName" for="" class="col-sm-2 col-form-label px-0 text-right">Customer<span
+                class="text-danger">*</span></label>
+            <div class="col-sm-12">
+              <ng-select (change)="onCustomerSelected($event)" placeholder="-- select --" id="receiptPayment"
+                [items]="customers" bindLabel="customerName" formControlName="selectedCustomer" (keyup)="searchCustomerName($event)"
+                [(ngModel)]="selectedCustomer">
+              </ng-select>
+              <div *ngIf="receiptsInformationForm.get('selectedCustomer')?.touched"
+                class="error-msg-common text-danger">
+                <div *ngIf="receiptsInformationForm.get('selectedCustomer').errors?.required">
+                  * required field
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <!--     <div class="form-group row">
+            <label id="receiptLabelPayment" for="" class="col-sm-4 col-form-label px-0 text-right">Type<span
+              class="text-danger">*</span></label>
+            <div class="col-sm-8">
+              <ng-select id="receiptInputType" placeholder="-- select --" [items]="paymentType" bindLabel="name" [(ngModel)]="selectedPaymentType"
+               formControlName="selectedPaymentType">
+            </ng-select>
+                <div *ngIf="receiptsInformationForm.get('selectedPaymentType')?.touched" class="error-msg-common text-danger">
+                  <div *ngIf="receiptsInformationForm.get('selectedPaymentType').errors?.required">
+                    * required field
+                  </div>
+                </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 py-3">
+          <ag-grid-angular style="width: 100%; height: 200px;" class="ag-theme-balham" [rowData]="gridArray"
+            [columnDefs]="columnDefs" id="columndefs" [gridOptions]="receiptsGridOptions">
+          </ag-grid-angular>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="form-group row">
+            <label id="receiptLabelBill" for="" class="col-sm-4 col-form-label px-0 text-right">Recievables</label>
+            <div class="col-sm-8">
+              <input type="text" formControlName="totalBill" class="form-control" id="receiptBill"
+                placeholder="Source Amount" disabled>
+              <!-- <div *ngIf="receiptsInformationForm.get('totalBill')?.touched" class="error-msg-common text-danger">
+                <div *ngIf="receiptsInformationForm.get('totalBill').errors?.required">
+                  * required field
+                </div>
+              </div> -->
+            </div>
+          </div>
+          <div class="form-group row">
+            <label id="receiptLabelDebit" for="" class="col-sm-4 col-form-label px-0 text-right">Debit</label>
+            <div class="col-sm-8">
+              <input type="text" formControlName="totalDebit" class="form-control" id="receiptDebit"
+                placeholder="Total Debit" disabled>
+
+            </div>
+          </div>
+          <!-- <div class="form-group row">
+
+             total advnce row
+            <label id="receiptLabelAdvance" for="" class="col-sm-4 col-form-label px-0 text-right">Advance</label>
+            <div class="col-sm-8">
+              <input type="text" formControlName="totalAdvance" class="form-control" id="receiptAdvance" placeholder="Total Advance" disabled>
+
+            </div>
+          </div> -->
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group row">
+            <label id="receiptLabelCredit" for="" class="col-sm-4 col-form-label px-0 text-right">Credit</label>
+            <div class="col-sm-8">
+              <input type="text" formControlName="totalCredit" class="form-control" id="receiptCredit"
+                placeholder="Total Credit" disabled>
+              <!--  <div *ngIf="receiptsInformationForm.get('totalCredit')?.touched" class="error-msg-common text-danger">
+                  <div *ngIf="receiptsInformationForm.get('totalCredit').errors?.required">
+                    * required field
+                  </div>
+                </div> -->
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="" class="col-sm-4 col-form-label px-0 text-right" id="paymentsLabelRoundOff">Status<span
+                class="text-danger">*</span></label>
+            <div class="col-sm-8">
+              <ng-select placeholder="-- select --" [items]="status" bindLabel="name" [(ngModel)]="selectedStatus"
+                formControlName="selectedStatus" (change)="onPaymentSelected($event)">
+              </ng-select>
+              <div *ngIf="receiptsInformationForm.get('selectedStatus')?.touched" class="error-msg-common text-danger">
+                <div *ngIf="receiptsInformationForm.get('selectedStatus').errors?.required">
+                  * required field
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group row">
+            <label id="receiptLabelCredit" for="" class="col-sm-4 col-form-label px-0 text-right">Round Off</label>
+            <div class="col-sm-8">
+              <input type="double" class="form-control" id="receiptCredit" formControlName="totalRoundOff"
+                (keyup.enter)="onRoundOff($event)" placeholder="0.0">
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="col-lg-3">
+          <div class="form-group row">
+            <label for="" class="col-sm-8 col-form-label px-0 text-center h3" id="paymentsLabelAmtPaid">Amount to be
+              Received: </label>
+            <div class="col-sm-0 text-center pt-0">
+              <h5 class="mb-0 pt-2"> {{amountToBeReceived}}</h5>
+
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-1"></div>
+            <!-- (click)="toggle()" -->
+            <input [disabled]="makePayment" type="button" (click)="onReceiptsSubmit()" for=""
+              class="btn btn-primary col-sm-9 col-form-label px-0 " id="paymentsLabelType" value="Confirm Receipt">
+          </div>
+
+
+          <div class="row">
+            <div class="col-sm-1"> </div>
+            <!--  <button [disabled]="checkReceiptsFormDisability()" (click)="onReceiptsSubmit()"
+                class="btn btn-primary px-4">Save</button>  -->
+                <input type="button" id="cancelTab" (click)="reset()" class="btn btn-primary col-sm-9 col-form-label px-0" value="Cancel">
+            <!--   <button type="button" (click)="reset()" class="btn btn-secondary px-4 ml-3">Cancel</button> -->
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div *ngIf="receiptGrid" class="itemSearchModal" id="itemSearchModal" tabindex="-1" role="dialog"
+        aria-labelledby="itemSearchModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-group row">
+                    <label for="" class="col-sm-2 col-form-label px-0 text-right" id="newStockLabelItemCd">From</label>
+                    <div class="col-sm-10">
+                      <input type="date" class="form-control" id="" [(ngModel)]="startDate"
+                        [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group row">
+                    <label for="" class="col-sm-2 col-form-label px-0 text-right" id="newStockLabelItemCd">To</label>
+                    <div class="col-sm-10">
+                      <input type="date" class="form-control" id="" [(ngModel)]="endDate"
+                        [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-4">
+                  <div class="form-group row">
+                    <label for="" class="col-sm-2 col-form-label px-0 text-right"
+                      id="newStockLabelItemCd">Status</label>
+                    <div class="col-sm-10">
+                      <ng-select [items]="receiptStatusArray" bindLabel="name" placeholder="-- Select --"
+                        id="newStockBatch#" [(ngModel)]="selectedPaymentStatus" [ngModelOptions]="{standalone: true}">
+                      </ng-select>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-5">
+                  <div class="form-group row">
+                    <label for="" class="col-sm-3 col-form-label px-0 text-right" id="newStockLabelItemCd">Search
+                      By</label>
+                    <!--  <div class="col-sm-10">
+                  <ng-select [items]="searchCodeArr" (change)="onSupplierSelected($event)" placeholder="-- Select --" id="newStockBatch#" [(ngModel)]="searchCode"
+                    >
+                  </ng-select>
+                </div> -->
+
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="" placeholder="Source Ref"
+                        [(ngModel)]="searchCodeValue" [ngModelOptions]="{standalone: true}"
+                        (change)="searchCode($event)">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-5">
+                  <div class="form-group row">
+                    <!--  <div class="col-sm-12">
+                  <input type="text" class="form-control" id="" placeholder="Supplier Name / Customer Name"
+                    [(ngModel)]="searchCodeValue">
+                </div> -->
+                  </div>
+                </div>
+                <div class="col-lg-2">
+                  <div class="form-group row">
+                    <div class="col-sm-12 text-right">
+                      <input type="button" class="btn btn-primary btn-block" (click)="getSalesBySearch()"
+                        value="Search">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-12 py-2">
+                <ag-grid-angular style="width: 100%; height: 300px;" [rowData]="rowData" class="ag-theme-balham"
+                  id="grid-wrapper" [gridOptions]="accountReceivablesGridOptions" [columnDefs]="gridColumnDefs"
+                  [pagination]="true" [cacheOverflowSize]="cacheOverflowSize"
+                  [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
+                  [paginationPageSize]="paginationSize">
+                </ag-grid-angular>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" data-dismiss="modal"
+                [disabled]="accountReceivablesGridOptions?.api?.getSelectedRows()?.length === 0"
+                class="btn btn-primary px-4 mr-2" (click)="getSelectedGridItems()">OK</button>
+
+              <button type="button" class="btn btn-secondary px-4" data-dismiss="modal" (click)="close()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div *ngIf="statusGrid" class="itemSearchModal" id="itemSearchModal" tabindex="-1" role="dialog"
+        aria-labelledby="itemSearchModalLabel">
+        <div class="modal-dialog" style="margin-top: 220px" role="document">
+          <div class="modal-content" style="height: 250px">
+            <div class="modal-body">
+
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label px-0 text-right" id="CreditNoteLabelDnDate">Approved By
+                    </label>
+                    <div class="col-sm-8">
+                      <ng-select placeholder="-- select --" id="CreditNoteDnDate" [items]="employees"
+                        (change)="selectedEmployee($event)" bindLabel="empName" formControlName="approvedBy"
+                        [ngModel]="approvedBy">
+                      </ng-select>
+
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label px-0 text-right" id="CreditNoteLabelDnDate">Approved
+                      Pin
+                    </label>
+                    <div class="col-sm-8">
+                      <div class="buttonInside">
+                        <input type="text" (keyup)="pinEnter($event)" placeholder="Approved Pin"
+                          [type]="show ? 'text' : 'password'" class="form-control" id="debitCreditNoteDnDate"
+                          formControlName="approvedPin">
+
+                      </div>
+                      <div *ngIf="receiptsInformationForm.get('approvedPin')?.invalid"
+                        class="error-msg-common text-danger">
+                        <div
+                          *ngIf="!receiptsInformationForm.get('approvedPin').errors?.required && receiptsInformationForm?.get('approvedPin')?.errors">
+                          * not a valid input
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button data-dismiss="modal" class="btn btn-primary px-4 mr-2" (click)="SavingAccountRecievables()"
+                [disabled]="makePin">OK</button>
+
+              <button type="button" class="btn btn-secondary px-4" data-dismiss="modal"
+                (click)="closeStatus()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+</div>
+
+<ng4-loading-spinner [loadingText]="'Please wait...'" [timeout]="400000000"> </ng4-loading-spinner>

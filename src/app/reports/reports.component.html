@@ -1,0 +1,628 @@
+<div class="col left-menu p-0 border-right-lg bg-light">
+  <div class="accordion" id="left-accordion-menu">
+    <div class="card bg-light">
+      <div class="card-header p-0">
+        <h2 class="mb-0 border-bottom border-white">
+          <button class="btn btn-link btn-block text-left py-2 px-3 text-white no-childern active" type="button">
+            <fa-icon [icon]="faChartLine" class="mr-2"></fa-icon><span>Reports</span>
+          </button>
+        </h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-lg right-content bg-extra-light p-0">
+  <div class="p-4">
+    <ul class="nav nav-pills mb-3 border-bottom border-secondary" id="pills-tab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="" data-toggle="pill" href="#pills-new" role="tab" aria-controls="pills-home"
+          aria-selected="true">Reports</a>
+      </li>
+    </ul>
+    <ul class="nav nav-pills nav-stacked" *ngIf="show_report_tabs">
+      <li class="nav-item">
+        <a *ngIf="showMasters" class="nav-link nav-link-1 active nav-item-space" id="" data-toggle="pill"
+          href="#pills-new" role="tab" aria-controls="pills-home" (click)="showMasterReports()"
+          aria-selected="false">Masters</a>
+      </li>
+      <li class="nav-item">
+        <a *ngIf="showSales" class="nav-link nav-item-space" id="" data-toggle="pill" href="#pills-history" role="tab"
+          (click)="showSalesReports()" aria-selected="false">Sales
+        </a>
+      </li>
+      <li class="nav-item">
+        <a *ngIf="showStock" class="nav-link nav-item-space" id="" data-toggle="pill" href="#pills-history" role="tab"
+          (click)="showStockReports()" aria-selected="false">Stock
+        </a>
+      </li>
+      <li class="nav-item">
+        <a *ngIf="showPurchase" class="nav-link nav-item-space" id="" data-toggle="pill" href="#pills-history"
+          role="tab" (click)="showPurchaseReports()" aria-selected="false">Purchase
+        </a>
+      </li>
+      <li class="nav-item">
+        <a *ngIf="showFinance" class="nav-link nav-item-space" id="" data-toggle="pill" href="#pills-history" role="tab"
+          (click)="showFinanceReports()" aria-selected="false">Finance
+        </a>
+      </li>
+    </ul>
+    <!-- <div class="row" *ngIf="display_form">
+      <h6>{{reportDetails['reportName']}}</h6>
+    </div> -->
+
+    <h6 class="border border-primary p-2 mt-3 mb-4 bg-light text-white" *ngIf="display_form">
+      {{reportDetails['reportName']}}</h6>
+    <div class="row" *ngIf="display_form">
+      <div *ngFor="let x of inputParameter" class="col-lg-4">
+        <div class="form-group row">
+          <label for="" class="col-sm-4 col-form-label pr-0 text-right" id="reportLabelDoctorName">
+            {{x.fieldName}}</label>
+          <div class="col-sm-8">
+            <ng-select (keyup)="onSupplierPIDKeyEnter($event)" type="text" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PURCHASE INVOICE DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersInPID()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of supplierDataPID" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onInvoiceNoPIDKeyEnter($event)" [(ngModel)]="grnNo"
+              *ngIf='x.columnName=="GRN_NO"&&reportDetails.reportName=="PURCHASE INVOICE DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,grnNo)"
+              (click)="getAllInvoiceNoInPID()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of invoiceNoDataPID" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onInvoiceNumbersPIDKeyEnter($event)" [(ngModel)]="invoiceNo"
+              *ngIf='x.columnName=="INVOICE_NO"&&reportDetails.reportName=="PURCHASE INVOICE DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,invoiceNo)"
+              (click)="getAllInvoiceNumbersInPID()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of invoiceNumbersDataPID" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <input type="date" class="form-control"
+              *ngIf='x.columnName=="INVOICE_DT"||x.columnName=="BILL_DATE"||x.columnName=="FromDate"||x.columnName=="ToDate"
+              ||x.columnName=="FROM_BILL_DATE"||x.columnName=="TO_BILL_DATE"||x.columnName=="PURCHASE_RETURN_DATE"||x.columnName=="FROM_APPROVED_DATE"||x.columnName=="TO_APPROVED_DATE"||x.columnName=="From_Entry_Date"||x.columnName=="To_Entry_Date"||x.columnName=="PURCHASE_ORDER_DT"'
+              (change)="onSelectField($event,x.columnName)" placeholder="Select {{x.fieldName}}">
+            <!-- <ng-select (keyup)="onInvoiceDtPIDKeyEnter($event)" type="text" [(ngModel)]="invoiceDt"
+              *ngIf='x.columnName=="INVOICE_DT"&&reportDetails.reportName=="PURCHASE INVOICE DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,invoiceDt)"
+              (click)="getAllInvoiceDtInPID()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of InvoiceDtDataPID" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select> -->
+
+            <ng-select (keyup)="onItemPMCKeyEnter($event)" [(ngModel)]="itemName"
+              *ngIf='x.columnName=="ITEM_NM"&&reportDetails.reportName=="PURCHASE MARGIN COMPARISON"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,itemName)"
+              (click)="getAllItemsInPMC()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of itemDataPMC" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onSupplierPMCKeyEnter($event)" type="text" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PURCHASE MARGIN COMPARISON"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersInPMC()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of supplierDataPMC" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!--PRODUCT OFFER LIST-->
+
+            <ng-select (keyup)="onSupplierPOLKeyEnter($event)" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PRODUCT OFFER LIST"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersInPOL()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of supplierDataPOL" value="{{opt}}"> {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onSupplierPIRKeyEnter($event)" type="text" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PURCHASE INVOICE REPORT"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersInPIR()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of suppliersPIRData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <ng-select (keyup)="onManufacturerPOLKeyEnter($event)" [(ngModel)]="manufacturerName"
+              *ngIf='x.columnName=="MFR_NAME"&&reportDetails.reportName=="PRODUCT OFFER LIST"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,manufacturerName)"
+              (click)="getAllManufacturerInPOL()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of manufacturerDataPOL" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!-- <ng-select (keyup)="onInvoiceDatePOLKeyEnter($event)" [(ngModel)]="invoiceDt"
+            *ngIf='x.columnName=="INVOICE_DT"&&reportDetails.reportName=="PRODUCT OFFER LIST"'
+            bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,invoiceDt)"
+            (click)="getAllInvoiceDateInPOL()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+            <ng-option *ngFor="let opt of invoiceDateDataPOL" value="{{opt}}">
+              {{opt}}
+            </ng-option>
+          </ng-select> -->
+
+            <!--SALES CANCELLATION LIST-->
+            <ng-select (keyup)="onManufacturerSCLKeyEnter($event)" [(ngModel)]="manufacturerName"
+              *ngIf='x.columnName=="MFR_NAME"&&reportDetails.reportName=="SALES CANCELLATION LIST"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,manufacturerName)"
+              (click)="getAllManufacturerInSCL()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of manufacturerDataSCL" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <ng-select (keyup)="onDoctorsSCLKeyEnter($event)" type="text" [(ngModel)]="doctorName"
+              *ngIf='x.columnName=="FIRST_NM"&&reportDetails.reportName=="SALES CANCELLATION LIST"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,doctorName)"
+              (click)="getAllDoctorssInSCL()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of doctorsDataSCL" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!-- <ng-select (keyup)="onBillDateSCLKeyEnter($event)" type="text" [(ngModel)]="billDate"
+         *ngIf='x.columnName=="BILL_DATE"&&reportDetails.reportName=="SALES CANCELLATION LIST"'
+         bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,billDate)"
+         (click)="getAllBillDatesInSCL()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+         <ng-option *ngFor="let opt of billDateDataSCL" value="{{opt}}">
+           {{opt}}
+         </ng-option>
+       </ng-select> -->
+            <!-- PURCHASE BY PRODUCT DETAIULS-->
+            <ng-select (keyup)="onManufacturerPBPDKeyEnter($event)" [(ngModel)]="manufacturerName"
+              *ngIf='x.columnName=="MFR_NAME"&&reportDetails.reportName=="PURCHASE BY PRODUCT DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,manufacturerName)"
+              (click)="getAllManufacturerInPBPD()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of manufacturerDataPBPD" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <ng-select (keyup)="onSupplierPBPDKeyEnter($event)" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PURCHASE BY PRODUCT DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersInPBPD()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of supplierDataPBPD" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <!-- <ng-select (keyup)="onInvoiceDtPIRKeyEnter($event)" type="text" [(ngModel)]="invoiceDt"
+              *ngIf='x.columnName=="INVOICE_DT"&&reportDetails.reportName=="PURCHASE INVOICE REPORT"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,invoiceDt)"
+              (click)="getAllInvoiceDtInPIR()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of invoiceDtPIRData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select> -->
+
+            <ng-select (keyup)="onCustomerNameSBPDKeyEnter($event)" type="text" [(ngModel)]="customerName"
+              *ngIf='x.columnName=="CUSTOMER_NM"&&reportDetails.reportName=="SALES BY PRODUCT DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,customerName)"
+              (click)="getAllCustomerNamesSBPD()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of customerSBPDData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!-- <ng-select (keyup)="onBillDateSBPDKeyEnter($event)" type="text" [(ngModel)]="billDate"
+              *ngIf='x.columnName=="BILL_DATE"&&reportDetails.reportName=="SALES BY PRODUCT DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,billDate)"
+              (click)="getAllBillDatesSBPD()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of billDtDataSBPD" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select> -->
+
+            <!--DUMMY BILL LIST-->
+            <ng-select (keyup)="onDoctorsDBLKeyEnter($event)" type="text" [(ngModel)]="doctorName"
+              *ngIf='x.columnName=="FIRST_NM"&&reportDetails.reportName=="DUMMY BILL LIST"' bindLabel="{{x.columnName}}"
+              (change)="onSelectField($event,x.columnName,doctorName)" (click)="getAllDoctorssInDBL()"
+              placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of doctorsDataDBL" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onManufacturerDBLKeyEnter($event)" [(ngModel)]="manufacturerName"
+              *ngIf='x.columnName=="MFR_NAME"&&reportDetails.reportName=="DUMMY BILL LIST"' bindLabel="{{x.columnName}}"
+              (change)="onSelectField($event,x.columnName,manufacturerName)" (click)="getAllManufacturerInDBL()"
+              placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of manufacturersDataDBL" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <!--SALES REGISTER DETAILS-->
+            <ng-select (keyup)="ontypeSRDKeyEnter($event)" type="text" [(ngModel)]="paymentType"
+              *ngIf='x.columnName=="TYPE"&&reportDetails.reportName=="SALES REGISTER DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,paymentType)"
+              (click)="getAllTypeInSRD()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of typesDataSRD" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <!--SALES REGISTER AREAWISE DETAILS-->
+            <ng-select (keyup)="onlocationSRADKeyEnter($event)" type="text" [(ngModel)]="location"
+              *ngIf='x.columnName=="CITY_NM"&&reportDetails.reportName=="SALES REGISTER AREAWISE DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,location)"
+              (click)="getAllLocationInSRAD()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of locationDataSRAD" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <!--SALES BY PRODUCT SUMMARY-->
+            <ng-select (keyup)="onItemNameSPSKeyEnter($event)" type="text" [(ngModel)]="itemName"
+              *ngIf='x.columnName=="ITEM_NM"&&reportDetails.reportName=="SALES BY PRODUCT SUMMARY"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,itemName)"
+              (click)="getAllItemNamesInSPS()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of itemNamesDataSPS" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onManufacturerSPSKeyEnter($event)" [(ngModel)]="manufacturerName"
+              *ngIf='x.columnName=="MFR_NAME"&&reportDetails.reportName=="SALES BY PRODUCT SUMMARY"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,manufacturerName)"
+              (click)="getAllManufacturerInSPS()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of manufacturerDataSPS" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <!--SALES REPORT BY BILL ID-->
+            <ng-select (keyup)="onBillCodeSRBBKeyEnter($event)" [(ngModel)]="billCode"
+              *ngIf='x.columnName=="BILL_CODE"&&reportDetails.reportName=="SALES RECEIPT"' bindLabel="{{x.columnName}}"
+              (change)="onSelectField($event,x.columnName,billCode)" (click)="getAllBillCodeInSRBB()"
+              placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of billCodeDataSRBB" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!--PURCHASE RETURN-->
+            <ng-select (keyup)="onGRNNoPRKeyEnter($event)" [(ngModel)]="grnNo"
+              *ngIf='x.columnName=="GRN_NO"&&reportDetails.reportName=="PURCHASE RETURNS -  CREDIT NOTE"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,grnNo)"
+              (click)="getAllGRNNOInPR()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of grnNoDataPR" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onSupplierPRKeyEnter($event)" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PURCHASE RETURNS -  CREDIT NOTE"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersInPR()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of suppliersDataPR" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <ng-select (keyup)="onInvoiceNoPRKeyEnter($event)" [(ngModel)]="invoiceNo"
+              *ngIf='x.columnName=="PURCHASE_RETURN_NO"&&reportDetails.reportName=="PURCHASE RETURNS -  CREDIT NOTE"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,invoiceNo)"
+              (click)="getAllInvoiceNoInPR()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of invoiceNoDataPR" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!-- SALES RETURN-CREDIT NOTE-->
+            <ng-select (keyup)="onSRETURNNoKeyEnter($event)" [(ngModel)]="salesReturnNo"
+              *ngIf='x.columnName=="SALES_RETURN_NO"&&reportDetails.reportName=="SALES RETURN-CREDIT NOTE"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,salesReturnNo)"
+              (click)="getAllsalesReturnNosInSRETURN()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of salesReurnNosDataSRETURN" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!-- SALES RETURN-CREDIT NOTE-->
+            <!-- <ng-select (keyup)="onBillCodeSRETURNKeyEnter($event)" [(ngModel)]="billCode"
+              *ngIf='x.columnName=="BILL_CODE"&&reportDetails.reportName=="SALES RETURN-CREDIT NOTE"' bindLabel="{{x.columnName}}"
+              (change)="onSelectField($event,x.columnName,billCode)" (click)="getAllBillCodeInSRETURN()"
+              placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of billCodeDataSRETURN" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>  -->
+
+            <!--CREDIT NOTE-->
+            <ng-select (keyup)="onCreditNoteNoKeyEnter($event)" [(ngModel)]="creditNoteNo"
+              *ngIf='x.columnName=="credit_note_no"&&reportDetails.reportName=="CREDIT NOTE"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,creditNoteNo)"
+              (click)="getAllCreditNoteNoCN()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of CreditNoteNoDataCN" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!--Account Receivables-->
+            <ng-select (keyup)="onCustomerNameARKeyEnter($event)" type="text" [(ngModel)]="customerName"
+              *ngIf='x.columnName=="CUSTOMER_NAME"&&reportDetails.reportName=="ACCOUNT RECEIVABLES"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,customerName)"
+              (click)="getAllCustomerNamesAR()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of customersARData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onReceiptNoKeyEnter($event)" [(ngModel)]="receiptNo"
+              *ngIf='x.columnName=="RECEIPT_NO"&&reportDetails.reportName=="ACCOUNT RECEIVABLES"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,receiptNo)"
+              (click)="getAllReceiptNoAR()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of ReceiptNoDataAR" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!-- Supplier By Manufacturer List -->
+            <ng-select (keyup)="onSupplierNameSBMLKeyEnter($event)" type="text" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="SUPPLIER BY MANUFACTURER LIST"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSupplierNamesSBML()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of supplierSBMLData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <!-- Purchase Details By Batch No -->
+            <ng-select (keyup)="onBatchNoPDBNKeyEnter($event)" type="text" [(ngModel)]="batchNo"
+              *ngIf='x.columnName=="BATCH_NO"&&reportDetails.reportName=="PURCHASE DETAILS BY BATCH NO"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,batchNo)"
+              (click)="getAllBatchNoPDBN()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of batchNoPDBNData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <ng-select (keyup)="onSupplierNamePDBNKeyEnter($event)" type="text" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PURCHASE DETAILS BY BATCH NO"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersPDBN()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of suppliersPDBNData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!-- Purchase Details By Product Name -->
+
+            <ng-select (keyup)="onItemNamePDPNKeyEnter($event)" type="text" [(ngModel)]="itemName"
+              *ngIf='x.columnName=="ITEM_NM"&&reportDetails.reportName=="PURCHASE DETAILS BY PRODUCT NAME"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,itemName)"
+              (click)="getAllSuppliersPDPN()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of itemsPDPNData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <ng-select (keyup)="onSupplierNamePDBNKeyEnter($event)" type="text" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PURCHASE DETAILS BY PRODUCT NAME"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersPDBN()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of suppliersPDBNData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!-- Purchase Details By PO NO -->
+            <ng-select (keyup)="onPurNOKeyEnter($event)" type="text" [(ngModel)]="PurNo"
+              *ngIf='x.columnName=="PURCHASE_ORDER_NO"&&reportDetails.reportName=="PURCHASE ORDER DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,PurNo)"
+              (click)="getAllPurNoInPDPO()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of PurOrdNoDataPDPO" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onSupplierNamePODPOKeyEnter($event)" type="text" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PURCHASE ORDER DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersPODPO()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of suppliersPODPOData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!-- Purchase Register List -->
+            <ng-select (keyup)="onSupplierNamePRLKeyEnter($event)" type="text" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SP_NAME"&&reportDetails.reportName=="PURCHASE REGISTER LIST"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSuppliersPRL()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of suppliersPRLData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <ng-select (keyup)="onPayTypePRLKeyEnter($event)" type="text" [(ngModel)]="paymentType"
+              *ngIf='x.columnName=="TYPE"&&reportDetails.reportName=="PURCHASE REGISTER LIST"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,paymentType)"
+              (click)="getAllPayTypesPRL()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of paymentTypesPRLData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <!-- SLOW MOVING PRODUCT DETAILS -->
+
+            <ng-select (keyup)="onItemNameSMPDKeyEnter($event)" type="text" [(ngModel)]="itemName"
+              *ngIf='x.columnName=="ITEM_NM"&&reportDetails.reportName=="SLOW MOVING PRODUCT DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,itemName)"
+              (click)="getAllItemNamesSMPD()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of itemsDataSMPD" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <ng-select (keyup)="onItemCodeSMPDKeyEnter($event)" type="text" [(ngModel)]="itemCode"
+              *ngIf='x.columnName=="ITEM_CD"&&reportDetails.reportName=="SLOW MOVING PRODUCT DETAILS"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,itemCode)"
+              (click)="getAllItemCodesSMPD()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of itemsCodesDataSMPD" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+            <!--DEBIT_NOTE-->
+            <ng-select (keyup)="onDebitNoKeyEnter($event)" type="text" [(ngModel)]="debitNumber"
+              *ngIf='x.columnName=="debit_note_no"&&reportDetails.reportName=="DEBIT NOTE"' bindLabel="{{x.columnName}}"
+              (change)="onSelectField($event,x.columnName,debitNumber)" (click)="getAllDebitNos()"
+              placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of debiitNosData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+
+            <!--ACCOUNT PAYABLES-->
+            <ng-select (keyup)="onSupplierNameAPKeyEnter($event)" type="text" [(ngModel)]="supplierName"
+              *ngIf='x.columnName=="SUPPLIER_NAME"&&reportDetails.reportName=="ACCOUNT PAYABLES"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,supplierName)"
+              (click)="getAllSupplierNamesAP()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of suppliersAPData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select type="text" [(ngModel)]="paymentStatus"
+              *ngIf='x.columnName=="PAYMENT_STATUS"&&reportDetails.reportName=="ACCOUNT PAYABLES"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,paymentStatus)"
+              placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of paymentStatusAPData" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+            <ng-select (keyup)="onPaymentNoKeyEnter($event)" type="text" [(ngModel)]="paymentNumber"
+              *ngIf='x.columnName=="PAYMENT_NO"&&reportDetails.reportName=="ACCOUNT PAYABLES"'
+              bindLabel="{{x.columnName}}" (change)="onSelectField($event,x.columnName,paymentNumber)"
+              (click)="getAllPaymentNosAP()" placeholder="Select {{x.fieldName}}" [searchable]="true">
+              <ng-option *ngFor="let opt of paymentNosDataAP" value="{{opt}}">
+                {{opt}}
+              </ng-option>
+            </ng-select>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+    </div>
+    <br>
+    <div class="row" *ngIf="display_form">
+      <div class="col text-center pb-3">
+        <button (click)="getReport()" class="btn btn-primary" id="" [disabled]="disable">
+          Generate Report
+        </button>&nbsp;
+        <button (click)="close()" class="btn btn-primary px-4">Back</button>
+      </div>
+    </div>
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade show active" id="pills-new" role="tabpanel" aria-labelledby="pills-home-tab">
+        <div *ngFor="let report of reportGroups;let i=index" class="list-group reports-wrap">
+          <a *ngIf="!display" (click)="loadReport(report.reportId)"
+            class="list-group-item list-group-item-action border-secondary"
+            style="cursor:pointer !important">{{i+1}}.&nbsp;&nbsp;{{report.reportName}}</a>
+        </div>
+        <h6 class="border border-primary p-2 mt-3 mb-4 bg-light text-white" *ngIf="display_grid">
+          {{reportDetails['reportName']}}</h6>
+        <div class="edit-single" *ngIf="display_grid">
+          <div class="row pb-3">
+            <div class="col text-right">
+              <a (click)="downloadPdf()" title="Download PDF"><i class="far fa-file-pdf text-secondary mr-3 h4"></i></a>
+              <a (click)="downloadExcel()" title="Download Excel"><i
+                  class="far fa-file-excel text-secondary h4"></i></a>
+            </div>
+          </div>
+          <div class="row pb-2">
+            <div class="col-12 pb-4">
+              <ag-grid-angular style="width: 100%; height: 400px;" class="ag-theme-balham" [rowData]="rowData"
+                [columnDefs]="columnDefs">
+              </ag-grid-angular>
+            </div>
+          </div>
+          <div *ngIf="showTotals" class="pb-4">
+            <div class="row text-right"
+              *ngIf='(setJson.ReportCode=="SALES_REGISTER_DETAILS" && setJson.TYPE=="CASH") ||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE==null&&setJson.TYPE==undefined)||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE=="CASH")'>
+              <div class="col-8">CASH AMOUNT</div>
+              <div class="col-0">:</div>
+              <div class="col-2">{{totalCash}}</div>
+            </div>
+            <div class="row text-right"
+              *ngIf='(setJson.ReportCode=="SALES_REGISTER_DETAILS"&&setJson.TYPE=="CARD")||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&& setJson.TYPE=="CARD"&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined)||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE==null&&setJson.TYPE==undefined)'>
+              <div class="col-8">CARD AMOUNT</div>
+              <div class="col-0">:</div>
+              <div class="col-2">{{totalCard}}</div>
+            </div>
+            <div class="row text-right"
+              *ngIf='(setJson.ReportCode=="SALES_REGISTER_DETAILS"&&setJson.TYPE=="CREDIT")||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&& setJson.TYPE=="CREDIT"&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined)||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE==null&&setJson.TYPE==undefined)'>
+              <div class="col-8">CREDIT AMOUNT</div>
+              <div class="col-0">:</div>
+              <div class="col-2">{{totalCredit}}</div>
+            </div>
+            <div class="row text-right"
+              *ngIf='(setJson.ReportCode=="SALES_REGISTER_DETAILS"&&setJson.TYPE=="CHEQUE")||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&& setJson.TYPE=="CHEQUE"&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined)||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE==null&&setJson.TYPE==undefined)'>
+              <div class="col-8">CHEQUE AMOUNT</div>
+              <div class="col-0">:</div>
+              <div class="col-2">{{totalCheque}}</div>
+            </div>
+            <div class="row text-right"
+              *ngIf='(setJson.ReportCode=="SALES_REGISTER_DETAILS"&&setJson.TYPE=="M-PESA") ||
+           (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&& setJson.TYPE=="M-PESA"&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined)||
+           (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE==null&&setJson.TYPE==undefined)'>
+              <div class="col-8">M-PESA AMOUNT</div>
+              <div class="col-0">:</div>
+              <div class="col-2">{{totalMPesa}}</div>
+            </div>
+            <div class="row text-right"
+              *ngIf='(setJson.ReportCode=="SALES_REGISTER_DETAILS"&&setJson.TYPE=="INSURANCE")||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&& setJson.TYPE=="INSURANCE"&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined)||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE==null&&setJson.TYPE==undefined)'>
+              <div class="col-8">INSURANCE AMOUNT</div>
+              <div class="col-0">:</div>
+              <div class="col-2">{{totalInsurance}}</div>
+            </div>
+            <div class="row text-right"
+              *ngIf='(setJson.ReportCode=="SALES_REGISTER_DETAILS"&&setJson.TYPE=="UPI") ||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&& setJson.TYPE=="UPI"&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined)||
+          (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE==null&&setJson.TYPE==undefined)'>
+              <div class="col-8">UPI AMOUNT</div>
+              <div class="col-0">:</div>
+              <div class="col-2">{{totalUPI}}</div>
+            </div>
+            <div class="row text-right"
+              *ngIf='(setJson.ReportCode=="SALES_REGISTER_DETAILS") ||
+        (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE==null&&setJson.TYPE==undefined)||
+        (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined)'>
+              <div class="col-8">TOTAL VAT AMOUNT</div>
+              <div class="col-0">:</div>
+              <div class="col-2">{{totalVat}}</div>
+            </div>
+
+            <div class="row text-right"
+              *ngIf='(setJson.ReportCode=="SALES_REGISTER_DETAILS") ||
+        (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined&&setJson.TYPE==null&&setJson.TYPE==undefined)||
+        (setJson.FROM_BILL_DATE!=null&&setJson.FROM_BILL_DATE!=undefined&&setJson.TO_BILL_DATE!=null&&setJson.TO_BILL_DATE!=undefined)'>
+              <div class="col-8">GRAND TOTAL</div>
+              <div class="col-0">:</div>
+              <div class="col-2">{{totalAmount}}</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col text-center">
+              <button (click)="close_grid()" class="btn btn-primary px-4">Return</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng4-loading-spinner [loadingText]="'Please wait...'" [timeout]="400000000"> </ng4-loading-spinner>

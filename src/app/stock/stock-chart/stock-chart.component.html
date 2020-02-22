@@ -1,0 +1,24 @@
+ 
+ <div id="chartsId">
+  <div class="row col-sm-12">
+  <div class="col-sm-6">
+ <div *ngIf="showSuppliersMarginPerChart">
+ <highcharts-chart
+   [Highcharts] = "highcharts" 
+   [options] = "charts" 
+   style = "" >
+</highcharts-chart> 
+</div>
+</div>
+<div class="col-sm-6">
+<div *ngIf="showSuppliersRevenueChart">
+ <highcharts-chart
+[Highcharts] = "highcharts" 
+[options] = "chartOptions2" 
+style = "" >
+</highcharts-chart> 
+
+</div>
+</div>
+</div> 
+</div>

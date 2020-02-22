@@ -1,0 +1,22 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #email {
+      visibility: hidden;
+  }
+  #approve, #approve * {
+    visibility: visible;
+  }
+  #approve {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  button {
+      visibility: hidden;
+  }
+  input {
+      visibility: hidden;
+  }
+}

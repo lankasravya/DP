@@ -1,0 +1,31 @@
+
+
+.modal-dialog.model-dialog-newwidth{
+  max-width: 1200px !important;
+   /*  margin: 0 auto !important; */
+    position: relative;
+}
+@media (max-width: 576px){
+.modal-dialog.model-dialog-newwidth{
+  max-width: 340px !important;
+   /*  margin: 0 auto !important; */
+    padding: 1px;
+    left: 0px;
+}
+}
+
+ul#menu li {
+  display:inline;
+  font-size: 1rem;
+}
+
+ul.tabs li {
+  list-style: none;
+  float: left;
+  padding-left: 20px;
+}
+ul.tabs li:before {
+  content: '\ffed';
+  margin-right: 0.5em;
+}
+

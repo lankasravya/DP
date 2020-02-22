@@ -1,0 +1,19 @@
+<h6 class="border border-primary p-2 mt-3 mb-4 bg-light text-white">Sent Quotation Details</h6>
+<div class="row">
+  <div class="col">
+    <form class="form-inline">
+      <input (keyup)="onQuickFilterChanged($event)" class="form-control no-right-border-radius" type="text"
+        placeholder="Search here.." aria-label="Search">
+      <button class="btn btn-primary no-left-border-radius">Search</button>
+    </form>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col py-3">
+    <ag-grid-angular *ngIf="showApprovedGrid" style="width: 100%; height: 200px;" class="ag-theme-balham"
+      [gridOptions]="approvedGridOptions">
+    </ag-grid-angular>
+  </div>
+</div>
