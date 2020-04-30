@@ -29,7 +29,7 @@
     "bootstrap": "^4.3.1",
     "highcharts": "^7.2.1",
     "highcharts-angular": "^2.4.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "ng": "0.0.0",
     "ng-click-outside": "^5.1.1",
     "ng4-loading-spinner": "^1.2.3",
