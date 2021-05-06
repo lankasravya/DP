@@ -27,7 +27,7 @@
     "ag-grid-community": "^21.2.2",
     "angular-highcharts": "^8.0.3",
     "bootstrap": "^4.3.1",
-    "highcharts": "^7.2.1",
+    "highcharts": "^9.0.0",
     "highcharts-angular": "^2.4.0",
     "jquery": "^3.4.1",
     "ng": "0.0.0",
